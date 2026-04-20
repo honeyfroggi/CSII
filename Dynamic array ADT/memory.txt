@@ -1,0 +1,148 @@
+char is one 
+int is one word (256 bytes)
+
+memory can be allocated in blocks such as arrays
+
+a pointer is an unsigned word
+
+Adress space:
+    each word has an adress and content
+    represented in hexadecimal
+    every 4 bits is one hex digit
+    1 byte is 2 hex digits
+    easier than showing adress in binary
+
+hex is base 16         (1,2,3,4,5,6,7,8,9,A,B,C,D,E,F)
+decimal is base 10     (1,2,3,4,5,6,7,8,9)
+binary is base 2       (1,2)
+
+int x = 10;
+int *ptr; 
+ptr = &x
+
+   | content | adress
+   | ------  | FF00
+ x | --10--  | FF01
+   | ------  | FF02
+ptr| -FF01-  | FF03
+
+*ptr = 20; // x = 20
+ptr = 0; // pointing to adress 0
+
+C-Style pointers:
+void foo(int *x) { *x = 20; }
+int main(){
+    int a = 10;
+    foo(&a);
+}
+
+Using Pointers reference variables:
+reference vars are pointers with syntactical differences
+int a;
+int &ref = a;  // ref points to a 
+
+ref = 20;   //dont have to de-reference to use, dont have to use get reference of '&' operator to initialize
+int *ptr = &a; //pointer needs reference of
+*ptr = 30;
+
+
+call by reference variables:
+void foo(int &x) { x = 20; }
+int main() {
+    int a;
+    foo(a);
+}
+
+Returning a Reference/Pointer:
+String& String::operator+=(const String &rhs){
+    ...
+    return *this;
+}
+int main() {
+    String a("abc);
+    cout << a += "xyz";
+}
+
+cant return local variables by reference, will cause problems and crash. 
+
+using pointers: Arrays
+    arrays are pointers
+    ex
+{
+    int a[10], b[10];
+    a=b;
+}
+memory leak issue, no more pointer to array a
+
+Allocation of memory for local objects
+    at compile time the exact ammount of memory is known for the local variables and is statically allocated
+    code stored in program block
+local vars, objects, and temporary objects are allocated memory on the call stack
+    - fixed and does not change during runtime 
+    - allocated on the stack when function is invoked and de-allocated when function ends
+
+Dynamically allocated memory:
+    allocated on the heap- 
+        - managed by the operating system
+    blocks of memory can be allocated and deallocated to a program
+    'new' operator used to allocate memory to the heap
+    'delete' or 'delete[]' operators used to deallocate memory on the heap 
+
+    // new returns an adress of a memory location on the heap
+int *ptr = new int;   //ptr points to an int
+        ptr = 0;        // memory leak, can no longer acess previous dynamic int
+*ptr = 10;            // the dynamic int val is now 10
+delete ptr;           // ptr released
+*ptr = 20;            // dangling pointer / error
+    should set the ptr = 0 after deallocation to avoid errors
+
+Allocating Arrays Dynamically:
+    int n = 5;
+    int *ptr = new int[n];
+    *ptr = 10;                  // ptr[0] = 10
+    *(ptr + 1) = 20;            // ptr[1] = 20
+    *(ptr + 2) = 30;            // ptr[2] = 30
+can also use bracket operator
+    ptr[0] = 1;                 // ptr[2] = 1
+    ptr[1] = 2;                 // ptr[2] = 2
+    ptr[2] = 3;                 // ptr[2] = 3
+
+Returning References/Pointers:
+    int* foo() {
+        int *ptr = new int[5];
+        return ptr;
+    }
+    int main() {
+        int *temp;
+        temp = foo();
+    }
+
+Assignment:
+int n = 5;
+int *ptr1 = new int[n];
+int *ptr2 = new int[4];
+ptr1 = ptr2;             // no syntac or runtime error, but causes a memory leak
+delete[] ptr1;
+
+Dynamic Array ADT:
+    - Array of int
+    - Allocate at runtime
+    - Support [] 
+
+Classes and Dynamic Memory:
+    requires programmer to manage memory carefully 
+    need to be able to deep copy in case of call by value and assignment
+    need to deallocate properly when out of scope 
+
+shallow copy- instead of pointing towards a different memory area with the 
+same values, is pointing to the same object as something else
+
+deep copy: two different memory locations wiht the same values in them\\
+
+Copy Semantics:
+    - specialized methods
+        - Copy constructor
+        - Destructor
+        - Overload assignment operator
+        - **Constant time Swap if possible
+    - all classes with dynamic memory need to define the four ^
